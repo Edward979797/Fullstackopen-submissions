@@ -1,44 +1,72 @@
-import React from 'react'
+import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
-const notes = [
-  {
-    id: 1,
-    content: 'HTML is easy',
-    date: '2019-05-30T17:30:31.098Z',
-    important: true
-  },
-  {
-    id: 2,
-    content: 'Browser can execute only Javascript',
-    date: '2019-05-30T18:39:34.091Z',
-    important: false
-  },
-  {
-    id: 3,
-    content: 'GET and POST are the most important methods of HTTP protocol',
-    date: '2019-05-30T19:20:14.298Z',
-    important: true
-  }
-]
+const Title = ({ name }) => {
+  return (
+    <h1>{name}</h1>
+  )
+}
 
-const App = (props) => {
-  const { notes } = props
-
+const Display = ({ anecdotes, number, votes }) => {
   return (
     <div>
-      <h1>Notes</h1>
-      <ul>
-        {notes.map(note =>
-        <li key={note.id}>
-          {note.content}
-        </li>)}
-      </ul>
+      {anecdotes[number]}
+      <div>has {votes} votes</div>
     </div>
   )
 }
 
+const Button = ({ handleClick, handleVoteClick }) => {
+  return (
+    <div>
+    <button onClick={handleVoteClick}>vote</button>
+    <button onClick={handleClick}>next anecdote</button>
+    </div>
+  )
+}
+
+const App = (props) => {
+  const [selected, setSelected] = useState(0)
+  const [points, setPoints] = useState([0, 0, 0, 0, 0, 0])
+  const [highest, setHighest] = useState(0)
+
+  const copy = {...points}
+
+  const handleClick = () => {
+    return (
+      setSelected(Math.floor(Math.random() * props.anecdotes.length))
+    )
+  }
+
+  const handleVoteClick = () => {
+      copy[selected] += 1;
+      setPoints(copy);
+      if (points[selected] >= points[highest]) {
+        setHighest(selected)
+  }
+}
+
+  return (
+    <div>
+      <Title name='Anecdote of the day' />
+      <Display anecdotes={anecdotes} number={selected} votes={points[selected]} />
+      <Button handleClick={handleClick} handleVoteClick={handleVoteClick} />
+      <Title name='Anecdote with most votes' />
+      <Display anecdotes={anecdotes} number={highest} votes={points[highest]} />
+    </div>
+  )
+}
+
+const anecdotes = [
+  'If it hurts, do it more often',
+  'Adding manpower to a late software project makes it later!',
+  'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
+  'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
+  'Premature optimization is the root of all evil',
+  'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
+]
+
 ReactDOM.render(
-  <App notes={notes} />,
+  <App anecdotes={anecdotes} />,
   document.getElementById('root')
 )
