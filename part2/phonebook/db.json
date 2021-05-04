@@ -1,0 +1,9 @@
+{
+  "people": [
+    {
+      "name": "Arto Hellas",
+      "number": "123456789",
+      "id": 1
+    }
+  ]
+}
